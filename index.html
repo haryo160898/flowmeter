@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KALKULATOR DEBIT AIR</title>
+
+<style>
+body{
+    font-family: Arial;
+    background:#f2f2f2;
+    margin:0;
+    padding:10px;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.card{
+    background:white;
+    max-width:420px;
+    margin:auto;
+    padding:15px;
+    border-radius:10px;
+    box-shadow:0 0 10px #ccc;
+    text-align:center;
+}
+
+label{
+    display:block;
+    text-align:left;
+    margin-top:5px;
+}
+
+input{
+    width:100%;
+    padding:8px;
+    margin:6px 0 12px 0;
+    box-sizing:border-box;
+    font-weight:bold;
+}
+
+button{
+    width:100%;
+    padding:10px;
+    font-size:16px;
+    font-weight:bold;
+}
+
+.result{
+    margin-top:10px;
+    background:#eef;
+    padding:10px;
+    border-radius:6px;
+    text-align:center;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+<h3>KALKULATOR DEBIT AIR (LPS)</h3>
+
+<label>WAKTU SEBELUMNYA</label>
+<input type="time" id="t1">
+
+<label>TOTALIZER SEBELUMNYA (M3)</label>
+<input type="number" id="m1" step="0.01">
+
+<label>WAKTU TERKINI</label>
+<input type="time" id="t2">
+
+<label>TOTALIZER TERKINI (M3)</label>
+<input type="number" id="m2" step="0.01">
+
+<button onclick="hitung()">HITUNG</button>
+
+<div class="result" id="hasil"></div>
+
+</div>
+
+<script>
+function toDetik(w){
+    let p = w.split(":");
+    return parseInt(p[0])*3600 + parseInt(p[1])*60;
+}
+
+function hitung(){
+
+ let w1 = document.getElementById("t1").value;
+ let w2 = document.getElementById("t2").value;
+
+ let m1 = parseFloat(document.getElementById("m1").value);
+ let m2 = parseFloat(document.getElementById("m2").value);
+
+ if(!w1 || !w2 || !m1 || !m2){
+     hasil.innerHTML = "LENGKAPI SEMUA DATA";
+     return;
+ }
+
+ if(m2 < m1){
+     hasil.innerHTML = "TOTALIZER TERKINI HARUS LEBIH BESAR";
+     return;
+ }
+
+ let d1 = toDetik(w1);
+ let d2 = toDetik(w2);
+
+ // kalau melewati tengah malam
+ if(d2 < d1){
+    d2 += 24*3600;
+ }
+
+ let dt = d2 - d1;
+ let volume = m2 - m1;
+
+ if(dt <= 0){
+     hasil.innerHTML = "WAKTU TIDAK VALID";
+     return;
+ }
+
+ let lps = (volume * 1000) / dt;
+
+ document.getElementById("hasil").innerHTML = `
+ HASIL PERHITUNGAN<br>
+ SELISIH WAKTU : ${dt} DETIK<br>
+ VOLUME MASUK : ${volume.toFixed(2)} M3<br>
+ DEBIT : ${lps.toFixed(2)} LPS
+ `;
+}
+</script>
+
+</body>
+</html>
